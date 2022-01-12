@@ -11,40 +11,52 @@ export default class Game implements IGame {
     public activePlayer: IPlayer;
     public state: GAME_STATE = GAME_STATE.NOT_INITIALIZED;
     public cells: IPicture[][] = [];
-    public tempScore : number = 0;
+    public tempScore: number = 0;
+    public onGameEnd: () => void = () => { };
+    public onGameStart: () => void = () => { };
+    public onNextPlayer: () => void = () => { };
     private nRows = 9;
     private nColumns = 8;
-    constructor(public players: IPlayer[] = [], private pictureService: IPictureService,private difficoult : GAME_DIFFICOULT = GAME_DIFFICOULT.HARD) {
-        switch(this.difficoult){
+
+    constructor(public players: IPlayer[] = [], private pictureService: IPictureService, private difficoult: GAME_DIFFICOULT = GAME_DIFFICOULT.HARD) {
+        switch (this.difficoult) {
             case GAME_DIFFICOULT.EASY:
                 this.nRows = 4;
                 this.nColumns = 2;
-            break;
+                break;
             case GAME_DIFFICOULT.MEDIUM:
-            this.nRows = 5;
-            this.nColumns = 4;    
-            break;
-            
+                this.nRows = 5;
+                this.nColumns = 4;
+                break;
+
         }
 
     }
     attempt(data: Array<{ x: number, y: number }>): any {
+        if (!this.activePlayer.totalAttempts)
+            this.activePlayer.totalAttempts = 0;
+        if (!this.activePlayer.totalScore)
+            this.activePlayer.totalScore = 0;
 
         if (this.state === GAME_STATE.STARTED) {
             if (!data || data.length !== 2)
                 throw new Error("Every attempt need 2 cells");
+            if (this.tempScore === 0) {
+                this.activePlayer.totalAttempts++;
+            }
             let firstChoice = this.cells[data[0].x][data[0].y];
             let secondChoice = this.cells[data[1].x][data[1].y];
-            if (firstChoice.name === secondChoice.name){
+            if (firstChoice.name === secondChoice.name) {
                 this.tempScore++;
-                if(this.tempScore >= this.nRows*this.nColumns / 2){
+                if (this.tempScore > this.activePlayer.totalScore)
                     this.activePlayer.totalScore = this.tempScore;
+                if (this.tempScore >= this.nRows * this.nColumns / 2)
                     this.end();
-                }
+
                 return true;
             }
-            else{
-                if(this.tempScore > this.activePlayer.totalScore)
+            else {
+                if (this.tempScore > this.activePlayer.totalScore)
                     this.activePlayer.totalScore = this.tempScore;
                 this.nextPlayer();
                 return false;
@@ -63,6 +75,7 @@ export default class Game implements IGame {
     }
     end(): void {
         this.tempScore = 0;
+        this.onGameEnd()
         this.state = GAME_STATE.ENDED;
     }
 
@@ -101,18 +114,18 @@ export default class Game implements IGame {
 
     }
 
-    nextPlayer(){
+    nextPlayer() {
         this.tempScore = 0;
-        if(this.players.length > 1 ){
-            let currentPlayer  = this.players.indexOf(this.activePlayer);
-            if(currentPlayer === this.players.length - 1){
+        if (this.players.length > 1) {
+            let currentPlayer = this.players.indexOf(this.activePlayer);
+            if (currentPlayer === this.players.length - 1) {
                 this.activePlayer = this.players[0];
             }
-            else{
+            else {
                 this.activePlayer = this.players[currentPlayer + 1];
             }
         }
     }
 
-   
+
 }

@@ -5,12 +5,29 @@ import PictureServerService from '../../api/services/PictureServerService'
 
 const  service : PictureServerService = new PictureServerService(); 
 
-export default function PicturesHandler(
+interface Props {
+  nPictures : number
+}
+
+export default async function PicturesHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+
+  let params : Props;
+  try{
+   params = JSON.parse(req.body)
+    
+  }
+  catch(error){
+    res.status(400).send("Bad params");
+  }
+
+  let pictures = await service.getAllPictures();
+  params.nPictures = params.nPictures || 72;
+  pictures = pictures.slice(0,params.nPictures);
   
-  res.status(200).json(async () => await service.getAllPictures());
+  res.status(200).json(pictures);
 
 }
 

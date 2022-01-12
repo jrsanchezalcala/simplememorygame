@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 import PictureServerService from '../api/services/PictureServerService'
-import Home from '../pages/index'
+import Home from '../pages/home'
 
 
 describe('PictureServerService' , () => {

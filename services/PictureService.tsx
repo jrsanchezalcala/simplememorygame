@@ -12,7 +12,7 @@ export default class PictureService implements IPictureService{
         if(nPictures < 1 ){
             throw new Error("the number of pictures to load must be an integer more than 1");
         }
-        this.pictures = await this.requestService.send({} , "pictures");
+        this.pictures = await this.requestService.send({ nPictures } , "pictures");
         
     }
 

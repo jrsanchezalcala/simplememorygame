@@ -28,7 +28,7 @@ export default class PictureServerService {
        let files = await readdir(path.resolve(this.path));
        this.pictures =  files.map(item => {
 
-          return { name : path.parse(item).name , src : "images/pictures/"+item , description : ""};
+          return { name : path.parse(item).name , src : "/images/pictures/"+item , description : ""};
        });
        return this.pictures;
     }
