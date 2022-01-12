@@ -12,9 +12,24 @@ type Props = {
 
 const Board :   FunctionComponent<Props> = ({ cells , onSelect  }) => {
 
-    let handleClick = (row : number, col : number) => {
+    const handleClick = (row : number, col : number) => {
         onSelect(row,col);
     }
+    const calcWidth = (cells : GamePicture[][]) => {
+        let maxWidth = 200;
+        let minWidth = 50;
+        if(!cells || cells.length == 0)
+        return 0;
+        let numberColumns = cells[0].length;
+        let calcWidth = window?.innerWidth ?  window.innerWidth / numberColumns * 0.8 : minWidth;
+        
+        return calcWidth > maxWidth ? maxWidth : calcWidth;
+    }
+
+    const calcHeight = (cells: GamePicture[][]) => {
+        return calcWidth(cells);
+    }
+    
     return(
         <>
         <style jsx>
@@ -32,7 +47,7 @@ const Board :   FunctionComponent<Props> = ({ cells , onSelect  }) => {
                 {
                 row.map((col,colIndex) => {
                   return <div  className="card" key={colIndex} onClick={() => handleClick(rowIndex,colIndex)} >
-                      <Card picture={col} isUp={col.selected ? true : false} width={100} height={100}></Card>
+                      <Card picture={col} isUp={col.selected ? true : false} width={calcWidth(cells)} height={calcHeight(cells)}></Card>
                       </div>   
                 })
                 }
@@ -44,5 +59,6 @@ const Board :   FunctionComponent<Props> = ({ cells , onSelect  }) => {
         </>
     );
 }
+
 
 export default Board;

@@ -11,7 +11,7 @@ type Props = {
 
 const PlayerScoreList: FunctionComponent<Props> = ({ players }) => {
     let playersOrdered = players.sort((a,b) => {
-        return a.totalScore - b.totalScore;
+        return  b.totalScore - a.totalScore;
     })
     return (
         <>

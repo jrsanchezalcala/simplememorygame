@@ -15,10 +15,8 @@ import GamePicture from '../models/GamePicture'
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { Box, CircularProgress, Grid } from '@mui/material'
-import { debug } from 'console'
-import { SelectAllRounded } from '@mui/icons-material'
-import SelectPlayer from '.'
 import PlayerScoreList from '../components/PlayerScoreList'
+import Router from 'next/router'
 interface Props {
   players: IPlayer[];
   difficoult: GAME_DIFFICOULT,
@@ -61,8 +59,8 @@ const GamePage: NextPage<Props> = ({ players, difficoult, timeFail = 1000 }) => 
       setSelected(newSelected);
       setPause(true);
       let result = await game.attempt(lastSelectedPair);
+      setActivePlayer({...game.activePlayer});
       if (result) {
-        setActivePlayer({...game.activePlayer});
         if (game.state === GAME_STATE.ENDED)
           handleEnd();
         else
@@ -83,23 +81,30 @@ const GamePage: NextPage<Props> = ({ players, difficoult, timeFail = 1000 }) => 
   }
 
   const handleEnd = () => {
-    setWinner(game.activePlayer);
+    setWinner(activePlayer);
     setSelected([]);
   }
 
   const resetPlayers = () => {
     setWinner(null);
     setGame(null);
+    Router.push("/");
   }
 
   const restart = async () => {
-
-    let game = new Game(players, pictureService, difficoult);
+    let resetPlayer = players.map((player : IPlayer) => {
+      player.totalScore = 0;
+      player.totalAttempts = 0;
+      player.totalTimePlay = 0;
+      return player;
+    })
+    let game = new Game(resetPlayer, pictureService, difficoult);
     await game.start();
     setWinner(null);
     setLoading(false);
     setPause(false);
     setGame(game);
+    setActivePlayer(resetPlayer[0]);
   }
 
   function getCells(cells: GamePicture[][]) {
@@ -138,9 +143,11 @@ const GamePage: NextPage<Props> = ({ players, difficoult, timeFail = 1000 }) => 
           <>
             <Grid container item>{activePlayer ? <PlayerBar player={activePlayer}></PlayerBar> : null}</Grid>
             <Grid container item>
-              {winner ? <WinnerDialog onClickResetPlayers={resetPlayers} onClickRestart={restart}>
+              {winner ? <WinnerDialog defaultOpen={true} onClickResetPlayers={resetPlayers} onClickRestart={restart}>
+                <>
                 <h1>Player {game.activePlayer} has win </h1>
                 <h2>Please select one of the options to play again</h2>
+                </>
               </WinnerDialog> : null}
             </Grid>
             <Grid container item>
