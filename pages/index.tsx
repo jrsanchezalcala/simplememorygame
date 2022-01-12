@@ -38,11 +38,11 @@ const SelectPlayer: NextPage = () => {
 
     return <Grid container>
     {players && players.map((item, index) => {
-          return <Grid item>
+          return <Grid key={item.name} item>
             <TextField required
             id="outlined-required"
             label="Player Name"
-            defaultValue={item.name} value={item.name} key={index} onChange={(e) => handleChangePlayer(e.target.value, index)}
+            defaultValue={item.name} value={item.name} onChange={(e) => handleChangePlayer(e.target.value, index)}
           />
             {index > 0 && <IconButton onClick={() => { removePlayer(index) }} ><RemoveIcon></RemoveIcon></IconButton>}
             </Grid >

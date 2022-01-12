@@ -109,7 +109,7 @@ const GamePage: NextPage<Props> = ({ players, difficoult, timeFail = 1000 }) => 
 
   function getCells(cells: GamePicture[][]) {
 
-    let newCells = cells.map((row, rowIndex) => {
+    let newCells = cells.map((row) => {
       return row.map((cell) => {
         return { ...cell, selected: false };
       });

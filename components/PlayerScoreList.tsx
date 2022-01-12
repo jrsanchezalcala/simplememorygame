@@ -17,7 +17,7 @@ const PlayerScoreList: FunctionComponent<Props> = ({ players }) => {
         <>
             <List >
                 {playersOrdered && playersOrdered.map((player) => {
-                    return <ListItem>
+                    return <ListItem key={player.name}>
                          <ListItemText sx={{paddingRight : 2}}
                     primary={player.name}
                    

@@ -16,7 +16,7 @@ const Board :   FunctionComponent<Props> = ({ cells , onSelect  }) => {
         onSelect(row,col);
     }
     const calcWidth = (cells : GamePicture[][]) => {
-        let maxWidth = 200;
+        let maxWidth = 100;
         let minWidth = 50;
         if(!cells || cells.length == 0)
         return 0;
@@ -25,6 +25,8 @@ const Board :   FunctionComponent<Props> = ({ cells , onSelect  }) => {
         
         return calcWidth > maxWidth ? maxWidth : calcWidth;
     }
+   
+
 
     const calcHeight = (cells: GamePicture[][]) => {
         return calcWidth(cells);
